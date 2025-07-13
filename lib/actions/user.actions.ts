@@ -5,10 +5,13 @@ import { createAdminClient, createSessionClient } from "../appwrite";
 import { ID } from "node-appwrite";
 import { parseStringify } from "../utils";
 
-export const signIns = async ( ) => 
+export const signIns = async ( {email,password}:signInProps) => 
 {
     try {
-// fedtch
+
+        const { account } = await createAdminClient();
+        const response = await account.createEmailPasswordSession(email,password);
+        return parseStringify(response);
     }
     catch(error)
     {
@@ -18,14 +21,15 @@ export const signIns = async ( ) =>
 
 export const signUps = async (userData: SignUpParams) => 
 {
+
+    const {email, password, lastName, firstName} = userData;
     try {
-    
   const { account } = await createAdminClient();
 
-  const newUserAccount = await account.create(ID.unique(), userData.email, userData.password, `${userData.firstName} ${userData.lastName}`);
+  const newUserAccount = await account.create(ID.unique(), email, password,`${firstName} ${lastName}`);
   const session = await account.createEmailPasswordSession(userData.email, userData.password);
 
-  (await cookies()).set("my-custom-session", session.secret, {
+  (await cookies()).set("appwrite-session", session.secret, {
     path: "/",
     httpOnly: true,
     sameSite: "strict",
@@ -44,7 +48,8 @@ export const signUps = async (userData: SignUpParams) =>
 export async function getLoggedInUser() {
     try {
       const { account } = await createSessionClient();
-      return await account.get();
+      const user = await account.get();
+      return parseStringify(user);
     } catch (error) {
       return null;
     }

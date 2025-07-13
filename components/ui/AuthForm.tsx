@@ -5,19 +5,11 @@ import Image from 'next/image';
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { date, email, z } from "zod"
+import { z } from "zod"
 
 
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import {Form,} from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import CustomInput from './CustomInput';
 import { authFormSchema } from '@/lib/utils';
@@ -31,6 +23,7 @@ const AuthForm = ({type}: {type:string}) => {
   const router = useRouter();
     const [user, SetUser] = useState(null);
     const [isloading, SetIsLoading] = useState(false);
+
     const formSchema = authFormSchema(type);
 
      // 1. Define your form.
@@ -50,15 +43,29 @@ const AuthForm = ({type}: {type:string}) => {
       // Sign up with plaid link token 
       if(type ==='sign-up')
       {
-        const newUser = await signUps(data);
+        const userData = {
+          firstName: data.firstname!,
+          lastName: data.lastname!,
+          address: data.address!,
+          state: data.state!,
+          postalCode: data.postalCode!,
+          dob: data.dob!,
+          ssn: data.ssn!,
+          email: data.email,
+          password: data.password
+        }
+        const newUser = await signUps(userData);
         SetUser(newUser);
+
       }
-      if (type === ' sign-in')
+      if (type === 'sign-in')
       {
          const response = await signIns( {email: data.email, password : data.password,});
          if (response)
-         {
            router.push('/');
+         
+         else{
+          alert('no respone');
          }
       }
     } 
@@ -116,8 +123,8 @@ const AuthForm = ({type}: {type:string}) => {
         </>}
         <CustomInput control={form.control} label='Emal' name='email'placeholder='Enter your username' />
         <CustomInput control={form.control} label='Password' name='password'placeholder='Enter your password' />
-        <div className='felx flex-col gap-4'>
-        <Button type="submit" className='form-btn' disabled={isloading}>{
+        <div className='flex flex-col gap-4'>
+        <Button type="submit" className='form-btn' disabled={isloading} >{
             isloading ? (<>
             <Loader2  size={20} className='animate-spin'/> Loading...
             </>): type ==='sign-in' ? 'Sign In' : 'Sign Up'

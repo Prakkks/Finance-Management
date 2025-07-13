@@ -61,7 +61,7 @@ const CustomInput = ({control,name,label,placeholder}: CustomInput ) => {
                 <Input
                   placeholder={placeholder}
                   className="input-class"
-                  id={name}
+                  // name={name}
                   autoComplete={name === "password" ? "current-password" : "off"}
                   type={name === "password" ? "password" : "text"}
                   {...field}
