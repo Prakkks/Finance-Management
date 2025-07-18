@@ -4,8 +4,9 @@ import React from 'react'
 
 const SignIn = async() => {
   const loggedinUser = await getLoggedInUser();
-  console.log(loggedinUser);
-
+  if (loggedinUser) 
+  console.log('from signin page',loggedinUser);
+    
   return (
     <section className='flex-center size-full max-sm:px-6'>
     <AuthForm type='sign-in' />

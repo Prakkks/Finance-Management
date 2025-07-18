@@ -193,7 +193,7 @@ export const getTransactionStatus = (date: Date) => {
   twoDaysAgo.setDate(today.getDate() - 2);
 
   return date > twoDaysAgo ? "Processing" : "Success";
-};
+} ;
 
 export const authFormSchema =(type: string)=> z.object({
   //sign in
